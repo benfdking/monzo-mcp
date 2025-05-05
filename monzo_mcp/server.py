@@ -3,8 +3,13 @@ from fastmcp import FastMCP
 from dotenv import load_dotenv
 import os
 
-from monzo_mcp.client import Account, AccountType, MonzoClient
-from pydantic import BaseModel
+from monzo_mcp.client import (
+    Account,
+    AccountType,
+    MonzoClient,
+    GetBalanceResponse,
+    Transaction,
+)
 
 # Load environment variables from .env file
 load_dotenv()
@@ -21,24 +26,10 @@ mcp = FastMCP()
 monzo_client = MonzoClient(MONZO_API_BASE)
 
 
-class Balance(BaseModel):
-    balance: int
-
-
-# @mcp.tool()
-# async def get_balance(ctx):
-#     async with httpx.AsyncClient() as client:
-#         resp = await client.get(
-#             f"{MONZO_API_BASE}/balance",
-#             headers={"Authorization": f"Bearer {MONZO_ACCESS_TOKEN}"},
-#         )
-#         resp.raise_for_status()
-#         return resp.json()
-#     return Balance(balance=100)
-
-# class Transaction(BaseModel):
-#     amount: int
-#     date: str
+@mcp.tool()
+async def get_balance(ctx, account_id: str) -> GetBalanceResponse:
+    response = await monzo_client.get_balance(account_id)
+    return response
 
 
 @mcp.tool()
@@ -47,3 +38,11 @@ async def list_accounts(
 ) -> List[Account]:
     response = await monzo_client.list_accounts(account_type)
     return response.accounts
+
+
+@mcp.tool()
+async def list_transactions(
+    ctx, account_id: str, since: Optional[str] = None, before: Optional[str] = None
+) -> List[Transaction]:
+    response = await monzo_client.list_transactions(account_id, since, before)
+    return response.transactions

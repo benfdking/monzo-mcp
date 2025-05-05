@@ -92,7 +92,7 @@ class MonzoClient:
     def _get_headers(self):
         return {"Authorization": f"Bearer {self.access_token}"}
 
-    async def read_balance(self, account_id: str) -> GetBalanceResponse:
+    async def get_balance(self, account_id: str) -> GetBalanceResponse:
         async with httpx.AsyncClient() as client:
             resp = await client.get(
                 f"{self.base_url}/balance",
