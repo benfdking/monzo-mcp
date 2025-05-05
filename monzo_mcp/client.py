@@ -1,4 +1,4 @@
-from typing import List, Optional, Literal
+from typing import List, Optional, Literal, Union, Dict, Any
 from pydantic import BaseModel
 import httpx
 
@@ -42,6 +42,48 @@ class ListPotsResponse(BaseModel):
     pots: List[Pot]
 
 
+class Address(BaseModel):
+    address: str
+    city: str
+    country: str
+    latitude: float
+    longitude: float
+    postcode: str
+    region: str
+
+
+class Merchant(BaseModel):
+    address: Address
+    created: str
+    group_id: str
+    id: str
+    logo: str
+    emoji: str
+    name: str
+    category: str
+
+
+class Transaction(BaseModel):
+    amount: int
+    created: str
+    currency: str
+    description: str
+    id: str
+    merchant: Union[Merchant, str]
+    metadata: Dict[str, Any]
+    notes: str
+    is_load: bool
+    settled: str
+
+
+class GetTransactionResponse(BaseModel):
+    transaction: Transaction
+
+
+class ListTransactionsResponse(BaseModel):
+    transactions: List[Transaction]
+
+
 class MonzoClient:
     def __init__(self, base_url: str, access_token: str):
         self.base_url = base_url
@@ -77,3 +119,28 @@ class MonzoClient:
                 headers=self._get_headers(),
             )
             return ListPotsResponse(**resp.json())
+
+    async def get_transaction(self, transaction_id: str) -> GetTransactionResponse:
+        async with httpx.AsyncClient() as client:
+            resp = await client.get(
+                f"{self.base_url}/transactions/{transaction_id}",
+                headers=self._get_headers(),
+                params={"expand[]": "merchant"},
+            )
+            return GetTransactionResponse(**resp.json())
+
+    async def list_transactions(
+        self, account_id: str, since: Optional[str] = None, before: Optional[str] = None
+    ) -> ListTransactionsResponse:
+        async with httpx.AsyncClient() as client:
+            params = {"account_id": account_id}
+            if since:
+                params["since"] = since
+            if before:
+                params["before"] = before
+            resp = await client.get(
+                f"{self.base_url}/transactions",
+                headers=self._get_headers(),
+                params=params,
+            )
+            return ListTransactionsResponse(**resp.json())
