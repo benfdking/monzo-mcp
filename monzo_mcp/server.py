@@ -1,6 +1,5 @@
 from typing import List, Optional
 from fastmcp import FastMCP
-import httpx
 from dotenv import load_dotenv
 import os
 
@@ -21,8 +20,10 @@ mcp = FastMCP()
 
 monzo_client = MonzoClient(MONZO_API_BASE)
 
+
 class Balance(BaseModel):
     balance: int
+
 
 # @mcp.tool()
 # async def get_balance(ctx):
@@ -39,7 +40,10 @@ class Balance(BaseModel):
 #     amount: int
 #     date: str
 
+
 @mcp.tool()
-async def list_accounts(ctx, account_type: Optional[AccountType] = None) -> List[Account]:
+async def list_accounts(
+    ctx, account_type: Optional[AccountType] = None
+) -> List[Account]:
     response = await monzo_client.list_accounts(account_type)
     return response.accounts

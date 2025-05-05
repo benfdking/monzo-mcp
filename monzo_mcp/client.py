@@ -8,7 +8,9 @@ class Account(BaseModel):
     description: str
     created: str
 
+
 AccountType = Literal["uk_retail", "uk_retail_joint"]
+
 
 class ListAccountsRequest(BaseModel):
     account_type_filter: Optional[AccountType] = None
@@ -23,12 +25,6 @@ class GetBalanceResponse(BaseModel):
     total_balance: int
     currency: str
     spend_today: int
-
-from __future__ import annotations
-
-from typing import List
-
-from pydantic import BaseModel
 
 
 class Pot(BaseModel):
@@ -53,7 +49,7 @@ class MonzoClient:
 
     def _get_headers(self):
         return {"Authorization": f"Bearer {self.access_token}"}
-    
+
     async def read_balance(self, account_id: str) -> GetBalanceResponse:
         async with httpx.AsyncClient() as client:
             resp = await client.get(
@@ -73,7 +69,7 @@ class MonzoClient:
                 headers=self._get_headers(),
             )
             return ListAccountsResponse(**resp.json())
-    
+
     async def list_pots(self) -> ListPotsResponse:
         async with httpx.AsyncClient() as client:
             resp = await client.get(
