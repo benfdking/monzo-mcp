@@ -24,6 +24,26 @@ class GetBalanceResponse(BaseModel):
     currency: str
     spend_today: int
 
+from __future__ import annotations
+
+from typing import List
+
+from pydantic import BaseModel
+
+
+class Pot(BaseModel):
+    id: str
+    name: str
+    style: str
+    balance: int
+    currency: str
+    created: str
+    updated: str
+    deleted: bool
+
+
+class ListPotsResponse(BaseModel):
+    pots: List[Pot]
 
 
 class MonzoClient:
@@ -34,11 +54,12 @@ class MonzoClient:
     def _get_headers(self):
         return {"Authorization": f"Bearer {self.access_token}"}
     
-    async def read_balance(self) -> GetBalanceResponse:
+    async def read_balance(self, account_id: str) -> GetBalanceResponse:
         async with httpx.AsyncClient() as client:
             resp = await client.get(
                 f"{self.base_url}/balance",
                 headers=self._get_headers(),
+                params={"account_id": account_id},
             )
             return GetBalanceResponse(**resp.json())
 
@@ -52,3 +73,11 @@ class MonzoClient:
                 headers=self._get_headers(),
             )
             return ListAccountsResponse(**resp.json())
+    
+    async def list_pots(self) -> ListPotsResponse:
+        async with httpx.AsyncClient() as client:
+            resp = await client.get(
+                f"{self.base_url}/pots",
+                headers=self._get_headers(),
+            )
+            return ListPotsResponse(**resp.json())
