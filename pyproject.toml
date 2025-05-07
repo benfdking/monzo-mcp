@@ -8,9 +8,13 @@ dependencies = [
     "fastapi>=0.115.12",
     "fastmcp>=2.2.6",
     "httpx>=0.28.1",
+    "mcp[cli]>=1.7.1",
     "pydantic>=2.11.4",
     "python-dotenv>=1.1.0",
 ]
+
+[project.scripts]
+monzo_mcp = "monzo_mcp.__main__:main"
 
 [dependency-groups]
 dev = [

@@ -3,7 +3,7 @@ from fastmcp import FastMCP
 from dotenv import load_dotenv
 import os
 
-from monzo_mcp.client import (
+from .client import (
     Account,
     AccountType,
     MonzoClient,
