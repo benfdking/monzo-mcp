@@ -9,4 +9,4 @@ lint:
 
 .PHONY: install
 install:
-	mcp install monzo_mcp/server.py:mcp -f .env --name monzo-mcp
+	mcp install /Users/benjaminking/Developer/monzo_mcp/monzo_mcp/__main__.py -f .env --name monzo-mcp --with-editable .

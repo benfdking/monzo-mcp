@@ -1,14 +1,14 @@
 [project]
 name = "monzo-mcp"
 version = "0.1.0"
-description = "Add your description here"
+description = "Monzo API integration for Claude"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "fastapi>=0.115.12",
-    "fastmcp>=2.2.6",
+    "fastmcp>=2.3.0",
     "httpx>=0.28.1",
-    "mcp[cli]>=1.7.1",
+    "mcp[cli]>=1.8.0",
     "pydantic>=2.11.4",
     "python-dotenv>=1.1.0",
 ]

@@ -99,6 +99,7 @@ class MonzoClient:
                 headers=self._get_headers(),
                 params={"account_id": account_id},
             )
+            resp.raise_for_status()  # Raise exception for 4XX/5XX responses
             return GetBalanceResponse(**resp.json())
 
     async def list_accounts(
@@ -110,6 +111,7 @@ class MonzoClient:
                 params={"account_type": account_type_filter},
                 headers=self._get_headers(),
             )
+            resp.raise_for_status()  # Raise exception for 4XX/5XX responses
             return ListAccountsResponse(**resp.json())
 
     async def list_pots(self) -> ListPotsResponse:
@@ -118,6 +120,7 @@ class MonzoClient:
                 f"{self.base_url}/pots",
                 headers=self._get_headers(),
             )
+            resp.raise_for_status()  # Raise exception for 4XX/5XX responses
             return ListPotsResponse(**resp.json())
 
     async def get_transaction(self, transaction_id: str) -> GetTransactionResponse:
@@ -127,6 +130,7 @@ class MonzoClient:
                 headers=self._get_headers(),
                 params={"expand[]": "merchant"},
             )
+            resp.raise_for_status()  # Raise exception for 4XX/5XX responses
             return GetTransactionResponse(**resp.json())
 
     async def list_transactions(
@@ -143,4 +147,5 @@ class MonzoClient:
                 headers=self._get_headers(),
                 params=params,
             )
+            resp.raise_for_status()  # Raise exception for 4XX/5XX responses
             return ListTransactionsResponse(**resp.json())
