@@ -1,1 +1,0 @@
-from monzo_mcp.server import mcp

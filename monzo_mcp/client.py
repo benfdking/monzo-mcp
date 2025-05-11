@@ -1,5 +1,5 @@
 from typing import List, Optional, Literal, Union, Dict, Any
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 import httpx
 
 
@@ -82,6 +82,37 @@ class GetTransactionResponse(BaseModel):
 
 class ListTransactionsResponse(BaseModel):
     transactions: List[Transaction]
+
+
+class ReceiptMerchant(BaseModel):
+    """
+    The merchant gives us more information about where the purchase was made,
+    to help us decide what to show at the top of the receipt.
+    """
+
+    name: str = Field(..., description="The merchant name")
+    online: bool = Field(
+        ...,
+        description="true for Ecommerce merchants like Amazon; false for offline merchants like Pret or Starbucks",
+    )
+    phone: Optional[str] = Field(None, description="The phone number of the store")
+    email: Optional[str] = Field(None, description="The merchant's email address")
+    store_name: Optional[str] = Field(
+        None, description="The name of that particular store, e.g. Old Street"
+    )
+    store_address: Optional[str] = Field(None, description="The store's address")
+    store_postcode: Optional[str] = Field(None, description="The store's postcode")
+
+
+class ReceiptTax(BaseModel):
+    """
+    Represents a tax entry on a receipt, such as VAT.
+    """
+
+    description: str = Field(..., description="e.g. 'VAT'")
+    amount: int = Field(..., description="Total amount of the tax, in pennies")
+    currency: str = Field(..., description="e.g. GBP")
+    tax_number: Optional[str] = Field(None, description="e.g. '945719291'")
 
 
 class MonzoClient:
